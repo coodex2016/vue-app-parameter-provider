@@ -63,7 +63,7 @@ module.exports = {
             process.env.VUE_APP_PARAMETERS_PROVIDER === 'cloud' ? traceAll() : trace('');
         } else {
             this.__location = process.env.VUE_APP_DEVELOPMENT_KEY || '_________'
-            trace('')
+            process.env.VUE_APP_PARAMETERS_PROVIDER === 'cloud' && !process.env.VUE_APP_DEVELOPMENT_KEY ? traceAll() : trace('');
         }
     }
 }
