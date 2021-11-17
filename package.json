@@ -1,0 +1,24 @@
+{
+  "name": "vue-app-parameter-provider",
+  "version": "0.0.1",
+  "description": "vue app parameters provider",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coodex2016/vue-app-parameter-provider.git"
+  },
+  "keywords": [
+    "data-structure",
+    "javascript"
+  ],
+  "author": "Davidoff Shen <jujus.shen@126.com> (https://coodex.org)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coodex2016/vue-app-parameter-provider/issues"
+  },
+  "homepage": "https://github.com/coodex2016/vue-app-parameter-provider",
+  "devDependencies": {
+    "eslint": "^8.2.0"
+  }
+}
