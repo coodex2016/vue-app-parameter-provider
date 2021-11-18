@@ -1,6 +1,8 @@
+
 /* eslint-disable no-empty */
 try { require(`@/../${process.env.VUE_APP_PARAMETERS_MODULE}`); } catch (e) { }
 try { require(`${process.env.PWD}/${process.env.VUE_APP_PARAMETERS_MODULE}`); } catch (e) { }
+const magicWord = '\u2009\u0819'
 
 module.exports = {
     __domainConfiguration: process.browser ?
@@ -37,21 +39,24 @@ module.exports = {
         const trace = prevStr => {
             for (var key in invoker) {
                 let f = invoker[key];
-                if (typeof f === 'function' && key !== 'showParameters') {
-                    console.log(prevStr + key + ": " + f.apply(invoker));
+                if (key === 'showParameters') continue;
+                if (typeof f === 'function') {
+                    console.log(prevStr + key + "(): " + f.apply(invoker));
+                } else {
+                    console.log(prevStr + key + ": " + f);
                 }
             }
         }
 
         const traceAll = () => {
             for (var key in this.__domainConfiguration) {
-                if (key === 'default') continue;
+                if (key === magicWord) continue;
                 this.__location = key;
                 console.log('parameters of [' + key + ']:');
                 trace('\t')
                 console.log('\n')
             }
-            this.__location = '_________'
+            this.__location = magicWord
             console.log('default paramters:');
             trace('\t')
             console.log('\n')
@@ -62,7 +67,7 @@ module.exports = {
         } else if (process.env.NODE_ENV === 'production') {
             process.env.VUE_APP_PARAMETERS_PROVIDER === 'cloud' ? traceAll() : trace('');
         } else {
-            this.__location = process.env.VUE_APP_DEVELOPMENT_KEY || '_________'
+            this.__location = process.env.VUE_APP_DEVELOPMENT_KEY || magicWord
             process.env.VUE_APP_PARAMETERS_PROVIDER === 'cloud' && !process.env.VUE_APP_DEVELOPMENT_KEY ? traceAll() : trace('');
         }
     }

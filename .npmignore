@@ -1,3 +1,7 @@
 node_modules
 example
 package-lock.json
+.gitignore
+.npmignore
+package-lock.json
+.vscode
