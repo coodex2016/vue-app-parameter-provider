@@ -9,7 +9,9 @@
     "url": "git+https://github.com/coodex2016/vue-app-parameter-provider.git"
   },
   "keywords": [
-    "data-structure",
+    "vue",
+    "tenant",
+    "parameters",
     "javascript"
   ],
   "author": "Davidoff Shen <jujus.shen@126.com> (https://coodex.org)",
