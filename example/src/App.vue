@@ -11,6 +11,7 @@ import appConfig from './appConfig';
 export default {
   name: "App",
 };
+console.log(appConfig.title)
 appConfig.showParameters();
 </script>
 
