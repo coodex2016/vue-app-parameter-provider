@@ -1,13 +1,13 @@
 
 /* eslint-disable no-empty */
 try { require(`@/../${process.env.VUE_APP_PARAMETERS_MODULE}`); } catch (e) { }
-try { require(`${process.env.PWD}/${process.env.VUE_APP_PARAMETERS_MODULE}`); } catch (e) { }
+try { require(`${process.cwd()}/${process.env.VUE_APP_PARAMETERS_MODULE}`); } catch (e) { }
 const magicWord = '\u2009\u0819'
 
 module.exports = {
     __domainConfiguration: process.browser ?
         require(`@/../${process.env.VUE_APP_PARAMETERS_MODULE}`) :
-        require(`${process.env.PWD}/${process.env.VUE_APP_PARAMETERS_MODULE}`),
+        require(`${process.cwd()}/${process.env.VUE_APP_PARAMETERS_MODULE}`),
 
     getDomain() {
         // 浏览器模式下: 生产环境使用location.origin, 开发、测试环境使用VUE_APP_DEVELOPMENT_KEY配置
