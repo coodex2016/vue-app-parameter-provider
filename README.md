@@ -138,7 +138,7 @@ VUE_APP_PARAMETERS_MODULE=conf/tenantB
 `package.json`中，如下修改
 
 - `"serve": "vue-cli-service serve",` --> `"serve": "vue-cli-service serve --mode cloud",`
-- `"build": "vue-cli-service build",` --> `"build": "vue-cli-service build --mode cloud --dest dist/cloud",`
+- `"build": "vue-cli-service build",` --> `"build": "vue-cli-service build --mode cloud --dest dist/cloud/prod",`
 
 #### 增加一个独立部署配置
 
@@ -151,6 +151,38 @@ VUE_APP_PARAMETERS_MODULE=conf/tenantB
   - 增加`"build:xxxx": "vue-cli-service build --mode xxxx --dest dist/xxxx",`
 - 开发调试使用`yarn serve:xxxx`或`npm run serve:xxxx`
 - 打包静态资源使用`yarn build:xxxx`或`npm run build:xxxx`
+
+### 云模式下，多环境发布
+
+构建静态资源时，我们可能会需要在多环境中测试，而这些环境的租户域名设置与生产环境不一定相同，可是如果把非生产环境的内容配置到变量聚合文件中，打包出来的文件也会包含着非生产环境的配置信息，不推荐使用这种方式。
+
+`@coodex/vue-app-parameter-provider` 自 `0.0.9`起，增加了一个命令行参数，用于指定编译后的运行环境，并自动加载该环境的租户访问域名配置。
+
+**约定**: `所有租户的变量模块`中只放置生产环境的配置，`环境配置模块`只放置对应环境的租户访问域名与租户配置的映射，`环境配置模块`的命名规则为`所有租户的变量模块`+`大写环境名`，例如`conf/params`是`所有租户的变量模块`，则`SIT环境配置模块`为`conf/paramsSIT`
+
+例如，我们生产环境，A租户是a.myapp.com,B租户是b.myapp.com；SIT环境中A租户是a.myapp-sit.com,B租户是b.myapp-sit.com，则：
+
+`所有租户的变量模块`配置为
+
+```javascript
+module.exports = {
+    '租户A': require('./tenantA'),
+    '租户B': require('./tenantB'),
+    'https://a.myapp.com':'租户A',
+    'https://b.myapp.com':'租户B',
+}
+```
+
+`SIT环境配置`为
+
+```javascript
+module.exports = {
+    'https://a.myapp-sit.com':'租户A',
+    'https://b.myapp-sit.com':'租户B',
+}
+```
+
+`package.json`中，脚本增加`"buildSIT": "vue-cli-service build --mode cloud --dest dist/cloud/sit --rtenv sit",`，与云模式build脚本的不同：1)dest分环境设置；2)增加rtenv参数
 
 ### 其他
 
