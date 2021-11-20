@@ -1,7 +1,9 @@
 
-/* eslint-disable no-empty */
-try { require(`@/../${process.env.VUE_APP_PARAMETERS_MODULE}`); } catch (e) { }
-try { require(`${process.cwd()}/${process.env.VUE_APP_PARAMETERS_MODULE}`); } catch (e) { }
+if (typeof process.cwd !== 'undefined') {
+    try { require(`${process.cwd()}/${process.env.VUE_APP_PARAMETERS_MODULE}`); } catch (e) { console.log(e); }
+} else {
+    try { require(`@/../${process.env.VUE_APP_PARAMETERS_MODULE}`); } catch (e) { console.log(e); }
+}
 const magicWord = '\u2009\u0819'
 
 module.exports = {
