@@ -1,26 +1,29 @@
-const parametersProvider = require('vue-app-parameter-provider')
+const parametersProvider = require('@coodex/vue-app-parameter-provider')
+const params = () => {
+    return {
+        /**
+         * 变量名：title
+         * @returns 获取应用标题
+         */
+        getTitle() {
+            return parametersProvider.getParameter("title", "APPILICATION TITLE");
+        },
+        // 或者
+        /**
+         * 应用标题，变量名: title
+         */
+        title: parametersProvider.getParameter("title", "APPILICATION TITLE"),
+
+        /* 在此处增加其他变量即可 */
+    };
+};
 
 module.exports = {
-    /**
-     * 变量名：title
-     * @returns 获取应用标题
-     */
-    getAppTitle() {
-        return parametersProvider.getParameter('title') || "APPILICATION TITLE";
-    },
-    // 或者
-    /**
-     * 应用标题
-     */
-    title: parametersProvider.getParameter('title') || "APPILICATION TITLE",
-    /* 上述两种模式任选一种即可，应须增加doc描述 */
+    ...params(),
 
-    /* 代码扩展区 */
-    /* 在此处增加
-    /* 代码扩展区 */
     showParameters() {
-        console.log("\n====== all application parameters ======")
-        parametersProvider.showParameters(this);
-        console.log("========================================\n")
-    }
-}
+        console.log("\n====== all application parameters ======");
+        parametersProvider.showParameters(params);
+        console.log("========================================\n");
+    },
+};

@@ -1,6 +1,6 @@
 # vue-app-parameter-provider
 
-基于vue的一个前端多租参数管理组件
+基于 vue 的一个前端多租参数管理组件
 
 ## 安装
 
@@ -20,9 +20,9 @@ npm install --save @coodex/vue-app-parameter-provider
 
 ```javascript
 // 自定义mode时，NODE_ENV默认为development，因此根据vue-cli-service的参数调整自定义mode是的环境信息
-if (process.argv && process.argv[2] === 'build') {
-    process.env.NODE_ENV = 'production';
-    process.env.BABEL_ENV = 'production';
+if (process.argv && process.argv[2] === "build") {
+  process.env.NODE_ENV = "production";
+  process.env.BABEL_ENV = "production";
 }
 ```
 
@@ -44,37 +44,41 @@ src
 `appConfig.js`参考代码
 
 ```javascript
-const parametersProvider = require('@coodex/vue-app-parameter-provider')
+const parametersProvider = require("@coodex/vue-app-parameter-provider");
 
-module.exports = {
+const params = () => {
+  return {
     /**
      * 变量名：title
      * @returns 获取应用标题
      */
-    getAppTitle() {
-        return parametersProvider.getParameter('title') || "APPILICATION TITLE";
+    getTitle() {
+      return parametersProvider.getParameter("title", "APPILICATION TITLE");
     },
     // 或者
     /**
      * 应用标题，变量名: title
      */
-    title: parametersProvider.getParameter('title') || "APPILICATION TITLE",
-    /* 上述两种模式任选一种即可，应须增加doc描述 */
+    title: parametersProvider.getParameter("title", "APPILICATION TITLE"),
 
-    /* 代码扩展区 */
-    /* 在此处增加
-    /* 代码扩展区 */
-    showParameters() {
-        console.log("\n====== all application parameters ======")
-        parametersProvider.showParameters(this);
-        console.log("========================================\n")
-    }
-}
+    /* 在此处增加其他变量即可 */
+  };
+};
+
+module.exports = {
+  ...params(),
+
+  showParameters() {
+    console.log("\n====== all application parameters ======");
+    parametersProvider.showParameters(params);
+    console.log("========================================\n");
+  },
+};
 ```
 
 租户变量模块推荐实践方案
 
-各租户变量独立配置，`param.js`负责聚合租户变量及别名，可以让单独部署和云租模式用户体验完全一致
+各租户变量独立配置，`params.js`负责聚合租户变量及别名，可以让单独部署和云租模式用户体验完全一致
 
 各租户变量配置模块
 
@@ -83,26 +87,26 @@ module.exports = {
  * 使用commonjs导出[变量：值]
  */
 module.exports = {
-    title: '租户A的云产品'
-}
+  title: "租户A的云产品",
+};
 ```
 
 `params.js`
 
 ```javascript
 module.exports = {
-    '租户A': require('./tenantA'),
-    '租户B': require('./tenantB'),
-    'http://localhost:8080': '租户A',// 云租模式下，根据location.origin来对应到具体租户变量
-    'file://':'租户A'
-}
+  租户A: require("./tenantA"),
+  租户B: require("./tenantB"),
+  "http://localhost:8080": "租户A", // 云租模式下，根据location.origin来对应到具体租户变量
+  "file://": "租户A",
+};
 ```
 
 `.env.cloud`
 
 ```txt
 # 使用云租模式
-VUE_APP_PARAMETERS_PROVIDER=cloud 
+VUE_APP_PARAMETERS_PROVIDER=cloud
 
 # 云租模式下使用的变量配置模块，相对于工程根路径
 VUE_APP_PARAMETERS_MODULE=conf/params
@@ -110,7 +114,7 @@ VUE_APP_PARAMETERS_MODULE=conf/params
 
 `.env.cloud.local`
 
-多租模式的变量配置应该根据生产环境的域名来对应，开发调试的时候怎么办？在聚合配置中增加开发调试域名到租户的映射可以做到，但是该配置是版本受控的，并且协作开发时，A需要调试租户A的产品；B需要调试租户B的产品，如果在版本受控代码中修改，势必引起冲突，再者，放入到聚合配置中，会将代码中服务于调试的配置也打包到生产环境中，这不是我们希望的情况。
+多租模式的变量配置应该根据生产环境的域名来对应，开发调试的时候怎么办？在聚合配置中增加开发调试域名到租户的映射可以做到，但是该配置是版本受控的，并且协作开发时，A 需要调试租户 A 的产品；B 需要调试租户 B 的产品，如果在版本受控代码中修改，势必引起冲突，再者，放入到聚合配置中，会将代码中服务于调试的配置也打包到生产环境中，这不是我们希望的情况。
 
 所以，可以通过不受版本控制的`.env.cloud.local`文件来指明当前开发者使用哪个租户进行调试
 

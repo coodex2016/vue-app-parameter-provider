@@ -1,15 +1,9 @@
-
-if (typeof process.cwd !== 'undefined') {
-    try { require(`${process.cwd()}/${process.env.VUE_APP_PARAMETERS_MODULE}`); } catch (e) { console.log(e); }
-} else {
-    try { require(`@/../${process.env.VUE_APP_PARAMETERS_MODULE}`); } catch (e) { console.log(e); }
-}
 const magicWord = '\u2009\u0819'
 
 module.exports = {
-    __domainConfiguration: process.browser ?
-        require(`@/../${process.env.VUE_APP_PARAMETERS_MODULE}`) :
-        require(`${process.cwd()}/${process.env.VUE_APP_PARAMETERS_MODULE}`),
+    __domainConfiguration: typeof process.browser === 'undefined' ?
+        require(`${process.cwd()}/${process.env.VUE_APP_PARAMETERS_MODULE}`) :
+        require(`@/../${process.env.VUE_APP_PARAMETERS_MODULE}`),
 
     getDomain() {
         // 浏览器模式下: 生产环境使用location.origin, 开发、测试环境使用VUE_APP_DEVELOPMENT_KEY配置
@@ -18,7 +12,7 @@ module.exports = {
             this.__location;
     },
 
-    getParameter(paramName) {
+    getParameter(paramName, defaultValue) {
         let paramObj;
         if (process.env.VUE_APP_PARAMETERS_PROVIDER === 'cloud') {
             paramObj = this.__domainConfiguration[this.getDomain()];
@@ -35,17 +29,23 @@ module.exports = {
         } else {
             paramObj = this.__domainConfiguration;
         }
-        return paramObj && paramObj[paramName];
+
+        const v =  paramObj && paramObj[paramName];
+        return typeof v === 'undefined' ? defaultValue : v;
     },
     showParameters(invoker) {
+        const getObj = () => {
+            return typeof invoker === 'function' ? invoker() : invoker;
+        }
         const trace = prevStr => {
-            for (var key in invoker) {
-                let f = invoker[key];
+            const paramsObj = getObj();
+            for (var key in paramsObj) {
+                let f = paramsObj[key];
                 if (key === 'showParameters') continue;
                 if (typeof f === 'function') {
-                    console.log(prevStr + key + "(): " + f.apply(invoker));
+                    console.log(prevStr + key + "(): " + f.apply(paramsObj) + ` [${typeof f.apply(paramsObj)}]`);
                 } else {
-                    console.log(prevStr + key + ": " + f);
+                    console.log(prevStr + key + ": " + f + ` [${typeof f}]`);
                 }
             }
         }
@@ -55,13 +55,12 @@ module.exports = {
                 if (key === magicWord) continue;
                 this.__location = key;
                 console.log('parameters of [' + key + ']:');
-                trace('\t')
-                console.log('\n')
+                trace('    ')
+                console.log('')
             }
             this.__location = magicWord
             console.log('default paramters:');
-            trace('\t')
-            console.log('\n')
+            trace('    ')
         };
 
         if (process.browser) {
