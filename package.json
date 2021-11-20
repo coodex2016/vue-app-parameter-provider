@@ -1,6 +1,6 @@
 {
   "name": "@coodex/vue-app-parameter-provider",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "vue app parameters provider",
   "main": "index.js",
   "scripts": {},
