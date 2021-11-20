@@ -87,7 +87,7 @@ module.exports = {
 }
 ```
 
-`param.js`
+`params.js`
 
 ```javascript
 module.exports = {
