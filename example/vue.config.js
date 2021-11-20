@@ -11,5 +11,10 @@ module.exports = {
     productionSourceMap: false,
     configureWebpack: {
         devtool: "source-map",
+        externals: {
+            T: 'T',
+            'AMap': 'AMap',
+            './cptable': 'var cptable'
+        },
     },
 }
