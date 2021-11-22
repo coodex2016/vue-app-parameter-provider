@@ -160,29 +160,46 @@ VUE_APP_PARAMETERS_MODULE=conf/tenantB
 
 **约定**: `所有租户的变量模块`中只放置生产环境的配置，`环境配置模块`只放置对应环境的租户访问域名与租户配置的映射，`环境配置模块`的命名规则为`所有租户的变量模块`+`大写环境名`，例如`conf/params`是`所有租户的变量模块`，则`SIT环境配置模块`为`conf/paramsSIT`
 
-例如，我们生产环境，A租户是a.myapp.com,B租户是b.myapp.com；SIT环境中A租户是a.myapp-sit.com,B租户是b.myapp-sit.com，则：
+例如，我们生产环境，A 租户是 a.myapp.com,B 租户是 b.myapp.com；SIT 环境中 A 租户是 a.myapp-sit.com,B 租户是 b.myapp-sit.com，则：
 
 `所有租户的变量模块`配置为
 
 ```javascript
 module.exports = {
-    '租户A': require('./tenantA'),
-    '租户B': require('./tenantB'),
-    'https://a.myapp.com':'租户A',
-    'https://b.myapp.com':'租户B',
-}
+  租户A: require("./tenantA"),
+  租户B: require("./tenantB"),
+  "https://a.myapp.com": "租户A",
+  "https://b.myapp.com": "租户B",
+};
 ```
 
 `SIT环境配置`为
 
 ```javascript
 module.exports = {
-    'https://a.myapp-sit.com':'租户A',
-    'https://b.myapp-sit.com':'租户B',
-}
+  "https://a.myapp-sit.com": "租户A",
+  "https://b.myapp-sit.com": "租户B",
+};
 ```
 
-`package.json`中，脚本增加`"buildSIT": "vue-cli-service build --mode cloud --dest dist/cloud/sit --rtenv sit",`，与云模式build脚本的不同：1)dest分环境设置；2)增加rtenv参数
+`@coodex/vue-app-parameter-provider/rtEnv`负责导出需要在`webpack.DefinePlugin`中定义的对象。使用示例如下：
+
+```js
+// vue.config.js
+module.exports = {
+  // ...其他配置
+  configureWebpack: {
+    // ...其他配置
+    plugins: [
+      new webpack.DefinePlugin(
+        require("@coodex/vue-app-parameter-provider/rtEnv")
+      ),
+    ],
+  },
+};
+```
+
+`package.json`中，脚本增加`"buildSIT": "vue-cli-service build --mode cloud --dest dist/cloud/sit --rtenv sit",`，与云模式 build 脚本的不同：1)dest 分环境设置；2)增加 rtenv 参数
 
 ### 其他
 

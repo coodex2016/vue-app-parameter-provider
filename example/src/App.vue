@@ -13,6 +13,8 @@ export default {
 };
 console.log(appConfig.title)
 appConfig.showParameters();
+/* eslint-disable no-undef */
+console.log(__rtEnvConfigurations)
 </script>
 
 <style>

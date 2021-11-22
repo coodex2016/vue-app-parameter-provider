@@ -5,26 +5,9 @@ let __domainConfiguration =
         ? require(`${process.cwd()}/${process.env.VUE_APP_PARAMETERS_MODULE}`)
         : require(`@/../${process.env.VUE_APP_PARAMETERS_MODULE}`);
 
-if (process.env.VUE_APP_PARAMETERS_PROVIDER === "cloud") {
-    let runtimeEnv = "";
-    if (process.argv) {
-        for (var i = 0; i < process.argv.length; i++) {
-            if (process.argv[i] === "--rtenv") {
-                if (process.argv.length > i) {
-                    runtimeEnv = process.argv[i + 1];
-                }
-                break;
-            }
-        }
-    }
-    if (runtimeEnv) {
-        __domainConfiguration = {
-            ...__domainConfiguration,
-            ...(typeof process.browser === "undefined"
-                ? require(`${process.cwd()}/${process.env.VUE_APP_PARAMETERS_MODULE}${runtimeEnv.toUpperCase()}`)
-                : require(`@/../${process.env.VUE_APP_PARAMETERS_MODULE}${runtimeEnv.toUpperCase()}`)),
-        };
-    }
+/* eslint-disable no-undef */
+if (typeof __rtEnvConfigurations !== 'undefined') {
+    __domainConfiguration = Object.assign(__domainConfiguration, __rtEnvConfigurations)
 }
 
 module.exports = {
@@ -89,7 +72,7 @@ module.exports = {
                 console.log("");
             }
             this.__location = magicWord;
-            console.log("default paramters:");
+            console.log("default parameters:");
             trace("    ");
         };
 
